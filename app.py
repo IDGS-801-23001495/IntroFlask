@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 from flask import flash
 from flask_wtf.csrf import CSRFProtect
+from forms import CinepolisForm
 
 import forms
 
@@ -9,13 +10,47 @@ app.secret_key='clave secreta'
 
 csrf=CSRFProtect()
 
+
+@app.route("/cinepolis", methods=["GET", "POST"])
+def cinepolis():
+    form = CinepolisForm(request.form)
+    total_pagar = 0
+    mensaje_error = ""
+    descuento_aplicado = ""
+    descuento_cineco = "" 
+    PRECIO_BOLETA = 12000
+
+    if request.method == 'POST' and form.validate():
+        nombre = form.nombre.data
+        n_compradores = form.compradores.data
+        n_boletas = form.boletas.data
+        tiene_tarjeta = form.tarjeta.data
+
+        max_permitido = n_compradores * 7
+        if n_boletas > max_permitido:
+            mensaje_error = f"No se pueden comprar más de 7 boletas por persona (Máx: {max_permitido})"
+        else:
+            total_pagar = n_boletas * PRECIO_BOLETA
+
+            if n_boletas > 5:
+                total_pagar *= 0.85 # 15% desc
+                descuento_aplicado = "Se aplicó un 15% de descuento por comprar más de 5 boletas."
+            elif 3 <= n_boletas <= 5:
+                total_pagar *= 0.90 # 10% desc
+                descuento_aplicado = "Se aplicó un 10% de descuento por comprar entre 3 y 5 boletas."
+
+            if tiene_tarjeta == 'si':
+                total_pagar *= 0.90 # 10% desc adicional
+                descuento_cineco = "¡Descuento adicional del 10% aplicado por usar tarjeta CINECO!"
+
+    return render_template("cinepolis.html", form=form, total=total_pagar, 
+                           error=mensaje_error, desc1=descuento_aplicado, desc2=descuento_cineco)
+
 @app.route("/")
 def index():
     titulo="Flask IDGS801"
     lista=["Juan", "Mario", "Pedro", "Dinenno"]
     return render_template("index.html", titulo=titulo, lista=lista)
-
-
 
 
 @app.route("/operasBas", methods=["GET","POST"])

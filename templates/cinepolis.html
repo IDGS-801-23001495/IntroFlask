@@ -1,0 +1,117 @@
+{% extends "layout.html" %}
+
+{% block content %}
+{% from "_macros.html" import render_field %}
+
+    <style>
+        body { background-color: #2c3e50; }
+        .cine-container {
+            background-color: #1f60b5; 
+            color: white;
+            padding: 30px;
+            border: 6px double #fcca20;
+            max-width: 900px;
+            margin: 50px auto;
+            font-family: 'Arial', sans-serif;
+        }
+        fieldset {
+            border: 2px solid white !important;
+            padding: 20px !important;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        legend {
+            float: none;
+            width: auto;
+            padding: 0 10px;
+            font-style: italic;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+    </style>
+<body>
+
+<div class="cine-container">
+    <div class="text-center mb-4">
+    <img src="{{ url_for('static', filename='bootstrap/img/cinepolis.svg') }}" 
+         alt="Cinépolis" 
+         style="max-width: 450px; width: 100%; height: auto;">
+</div>
+
+    <form method="POST" novalidate>
+        {{form.csrf_token}}
+        <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+        <div class="row">
+            <div class="col-md-7">
+                <fieldset>
+                    <legend>Entradas</legend>
+                    {{ render_field(form.nombre, class="form-control form-control-sm") }}
+                    {{ render_field(form.compradores, class="form-control form-control-sm") }}
+                    
+                    <div class="row mb-2 align-items-center">
+                        <div class="col-sm-6 text-end">
+                            <label class="form-label mb-0"><strong>Tarjeta Cineco</strong></label>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="d-flex gap-3 justify-content-start">
+                                {% for subfield in form.tarjeta %}
+                                    <div class="form-check-inline">
+                                        {{ subfield }} {{ subfield.label(class="form-check-label") }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {{ render_field(form.boletas, class="form-control form-control-sm") }}
+                </fieldset>
+            </div>
+
+            <div class="col-md-5">
+                <fieldset style="height: 100%;">
+                    <legend>Salidas</legend>
+                    
+                    <label class="mb-2">Valor a Pagar</label>
+                    <input type="text" class="form-control bg-white fw-bold text-primary" readonly 
+                           value="{{ '$ {:,.2f}'.format(total) if total > 0 else '' }}">
+
+                           <br>
+                    
+                    {% if desc1 %}
+                        <div class="alert alert-info py-1 small" style="font-size: 0.8rem; color: black;">
+                            {{ desc1 }}
+                        </div>
+                    {% endif %}
+                    
+                    {% if desc2 %}
+                        <div class="alert alert-success py-1 small" style="font-size: 0.8rem; color: black;">
+                            {{ desc2 }}
+                        </div>
+                    {% endif %}
+
+                    {% if error %}
+                        <div class="alert alert-danger mt-2 py-1 small" style="color: black;">
+                            {{ error }}
+                        </div>
+                    {% endif %}
+                    
+                </fieldset>
+            </div>
+        </div>
+
+        <div class="row justify-content-center mt-3">
+            <div class="col-md-6">
+                <fieldset>
+                    <legend>Acciones</legend>
+                    <div class="d-flex justify-content-around">
+                        <button type="submit" class="btn btn-light border fw-bold">Procesar</button>
+                        <a href="/" class="btn btn-light border fw-bold">Salir</a>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </form>
+</div>
+
+</body>
+{% endblock %}
