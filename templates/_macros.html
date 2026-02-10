@@ -36,3 +36,16 @@
     </div>
   </div>
 {% endmacro %}
+
+{% macro dist(label, name_x, name_y)%}
+<div class="mb-3">
+    <label class="form-label"><strong>{{ label }}:</strong></label>
+    <div class="input-group">
+        <span class="input-group-text">(</span>
+        <input type="number" step="any" name="{{ name_x }}" class="form-control" placeholder="x" required>
+        <span class="input-group-text">,</span>
+        <input type="number" step="any" name="{{ name_y }}" class="form-control" placeholder="y" required>
+        <span class="input-group-text">)</span>
+    </div>
+</div>
+{%endmacro%}

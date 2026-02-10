@@ -2,13 +2,28 @@ from flask import Flask, render_template, request
 from flask import flash
 from flask_wtf.csrf import CSRFProtect
 from forms import CinepolisForm
-
+import math
 import forms
 
 app = Flask(__name__)
 app.secret_key='clave secreta'
 
 csrf=CSRFProtect()
+
+@app.route("/distancia2p", methods=["GET", "POST"])
+def dist():
+    x1=0
+    y1=0
+    x2=0
+    y2=0
+    d=0
+    if request.method=='POST':
+        x1 = float(request.form.get('x1'))
+        y1 = float(request.form.get('y1'))
+        x2 = float(request.form.get('x2'))
+        y2 = float(request.form.get('y2'))
+        d=math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+    return render_template("distancia.html", x1=x1, y1=y1, x2=x2, y2=y2, d=d)
 
 
 @app.route("/cinepolis", methods=["GET", "POST"])

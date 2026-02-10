@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+{% import "_macros.html" as macros %}
+
+    <div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0" style="border-radius: 20px; overflow: hidden;">
+                <div class="card-header bg-dark text-white text-center py-4">
+                    <h3 class="mb-0 fw-bold">Calculadora de Distancia</h3>
+                </div>
+                
+                <div class="card-body p-4">
+                    <form action="/distancia2p" method="post">
+                        <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                        
+                        <div class="mb-4">
+                            {{ macros.dist("Punto A", "x1", "y1") }}
+                        </div>
+                        <div class="mb-4">
+                            {{ macros.dist("Punto B", "x2", "y2") }}
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-dark btn-lg shadow-sm">
+                                Calcular Ahora
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                {% if d %}
+                <div class="card-footer bg-light border-top-0 p-4">
+                    <div class="result-container bg-white shadow-sm rounded-4 p-3 text-center">
+                        <div class="row mb-3">
+                            <div class="col text-muted small border-end">
+                                <strong>Coordenada 1</strong><br>
+                                ({{ x1 }}, {{ y1 }})
+                            </div>
+                            <div class="col text-muted small">
+                                <strong>Coordenada 2</strong><br>
+                                ({{ x2 }}, {{ y2 }})
+                            </div>
+                        </div>
+                        
+                        <span class="text-uppercase text-secondary fw-bold" style="letter-spacing: 1px; font-size: 0.8rem;">Distancia Total</span>
+                        <h2 class="text-dark display-6 fw-bold mb-0">{{ "%.2f"|format(d) }}</h2>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+    {%endblock%}
